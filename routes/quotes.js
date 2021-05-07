@@ -27,7 +27,7 @@ router.get('/quote', function (req, res, next) {
 })
 
 
-router.get('/quote/authors', function (req, res, next) {
+router.get('/authors', function (req, res, next) {
 	getDb((err, db) => {
 		if(!err){
 			let dbo = db.db("quotes");
