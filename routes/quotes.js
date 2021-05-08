@@ -42,6 +42,22 @@ router.get('/authors', function (req, res, next) {
 	})
 })
 
+router.get('/tags', function (req, res, next) {
+	getDb((err, db) => {
+		if(!err){
+			let dbo = db.db("quotes");
+			dbo.collection("quote").distinct('Tags', {} ,(err, tags ) => {
+				let unique_tags = [...new Set(tags)]
+				res.send(unique_tags);
+				db.close();
+				return next()
+			})
+		}else{
+			return next(err);
+		}
+	})
+})
+
 router.get('/quotes', function (req, res, next) {
 	getDb((err, db) => {
 		if(!err){
@@ -54,6 +70,30 @@ router.get('/quotes', function (req, res, next) {
 					db.close();
 					return next()
 				})
+		}else{
+			return next(err);
+		}
+	})
+})
+
+
+router.get('/quotes/author/:author', function (req, res, next) {
+	getDb((err, db) => {
+		if(!err){
+			let dbo = db.db("quotes");
+			let page = parseInt(req.query['page']) || 0;
+			let limit = parseInt(req.query['limit']) || perpage;
+			let author = req.params.author.trim();
+			if (author.length == 0){
+				return next("Author must be provided");
+			}else{
+				dbo.collection("quote").find({"Author": author}).skip(page * perpage).limit(limit)
+					.toArray((err, quote ) => {
+						res.send(quote);
+						db.close();
+						return next()
+					})
+			}
 		}else{
 			return next(err);
 		}

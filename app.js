@@ -1,7 +1,7 @@
 const express = require("express")
 const app = express()
 let bodyParser = require('body-parser');
-
+let port = 3000;
 
 //configure bodyparser to hande the post requests
 app.use(bodyParser.urlencoded({
@@ -18,6 +18,6 @@ app.get("/", function(req, res) {
 
 app.use('/api', require("./routes/quotes"))
 
-
-
-app.listen(3000)
+app.listen(port, ()=>{
+	console.log(`server started at port ${port}`)
+})
