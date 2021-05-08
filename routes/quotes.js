@@ -92,6 +92,28 @@ router.get('/quotes', function (req, res, next) {
 	})
 })
 
+router.get('/quotes/category/:category', function (req, res, next) {
+	getDb((err, db) => {
+		if(!err){
+			let dbo = db.db("quotes");
+			let page = parseInt(req.query['page']) || 0;
+			let limit = parseInt(req.query['limit']) || perpage;
+			let category = req.params.category.trim();
+			if (category.length == 0){
+				return next("Category must be provided");
+			}else{
+				dbo.collection("quote").find({"Category": category}).skip(page * perpage).limit(limit)
+					.toArray((err, quote ) => {
+						res.send(quote);
+						db.close();
+						return next()
+					})
+			}
+		}else{
+			return next(err);
+		}
+	})
+})
 
 router.get('/quotes/author/:author', function (req, res, next) {
 	getDb((err, db) => {
