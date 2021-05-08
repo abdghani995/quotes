@@ -58,6 +58,22 @@ router.get('/tags', function (req, res, next) {
 	})
 })
 
+router.get('/categories', function (req, res, next) {
+	getDb((err, db) => {
+		if(!err){
+			let dbo = db.db("quotes");
+			dbo.collection("quote").distinct('Category', {} ,(err, categories ) => {
+				let unique_categories = [...new Set(categories)]
+				res.send(unique_categories);
+				db.close();
+				return next()
+			})
+		}else{
+			return next(err);
+		}
+	})
+})
+
 router.get('/quotes', function (req, res, next) {
 	getDb((err, db) => {
 		if(!err){
