@@ -34,5 +34,31 @@ module.exports = {
                 return next();
             }
         })
+    },
+
+    updateTodo: function (req, res, next) {
+        if(!req.body.todoid || !req.body.status) {
+            res.status(400).json({status:false, message:"Invalid Data"});
+            return next();
+        }else{
+            Todo.findOne({todoid: req.body.todoid}, {}, (err, todoData) => {
+                if(err){
+                    return res.status(501).send("Some error");
+                    return next();
+                }else if(todoData.userid != req.user.uid){
+                    return res.status(401).send("Invalid user");
+                    return next();
+                }else{
+                    todoData.status = req.body.status;
+                    todoData.save((err, data) => {
+                        if(err) { res.status(400).json({status:false, message:"Error saving data"})}
+                        else{
+                            return res.json({"success": true, "message": "Todo updated successfully"})
+                            return next();
+                        }
+                    });
+                }
+            })
+        }
     }
 }

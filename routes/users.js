@@ -8,5 +8,6 @@ router.get('/info', userController.authenticate, userController.userInfo);
 
 router.get('/todo', userController.authenticate, todoController.fetchTodo);
 router.post('/todo', userController.authenticate, todoController.addTodo);
+router.put('/todo', userController.authenticate, todoController.updateTodo);
 
 module.exports = router;

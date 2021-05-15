@@ -51,8 +51,10 @@ userSchema.methods.comparePwd = function(pwd, cb){
     })
 }
 
-userSchema.methods.repr = function(){
+userSchema.methods.loginRepr = function(){
+    const currentDate = new Date();
     return {
+        "time": currentDate.getTime().toString(),
         "name": this.name,
         "username": this.username,
         "uid": this.uid
