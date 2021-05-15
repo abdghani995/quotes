@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const uid = require("uuid");
 
 var userSchema = new mongoose.Schema({
+    uid: {
+        type: String,
+        default: () => uid.v4()
+    },
     name: {
         type: String,
         require: false,
@@ -49,7 +54,8 @@ userSchema.methods.comparePwd = function(pwd, cb){
 userSchema.methods.repr = function(){
     return {
         "name": this.name,
-        "username": this.username
+        "username": this.username,
+        "uid": this.uid
     }
 }
 

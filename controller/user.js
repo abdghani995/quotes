@@ -8,7 +8,7 @@ module.exports = {
         }else{
             var user = User(req.body);
             user.save((err, newUser) => {
-                console.log(err, newUser);
+                // console.log(err, newUser);
                 if(err){
                     res.json({"success": false,"message":"Failed saving users", "description": err});
                 }else{
