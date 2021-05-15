@@ -21,7 +21,7 @@ module.exports = {
         User.findOne({username: req.body.username},{_id:0}, (err, user) => {
             if(err) throw err;
             if(!user){
-                res.status(403).json({success:true, msg: 'Authentication Failed, User not found'});
+                res.status(403).json({success:false, msg: 'Authentication Failed, User not found'});
             }else{
                 user.comparePwd(req.body.password, (err, isMatch) => {
                     if(isMatch && !err){
