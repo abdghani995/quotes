@@ -42,8 +42,8 @@ module.exports = {
             return next();
         }else{
             Todo.findOne({todoid: req.body.todoid}, {}, (err, todoData) => {
-                if(err){
-                    return res.status(501).send("Some error");
+                if(err || todoData == null){
+                    return res.status(501).send({"success": false, "message": "Error fetching todo"});
                     return next();
                 }else if(todoData.userid != req.user.uid){
                     return res.status(401).send("Invalid user");
@@ -51,7 +51,7 @@ module.exports = {
                 }else{
                     todoData.status = req.body.status;
                     todoData.save((err, data) => {
-                        if(err) { res.status(400).json({status:false, message:"Error saving data"})}
+                        if(err) { res.status(400).json({"success":false, "message":"Error saving data"})}
                         else{
                             return res.json({"success": true, "message": "Todo updated successfully"})
                             return next();
