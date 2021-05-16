@@ -26,7 +26,7 @@ module.exports = {
                 user.comparePwd(req.body.password, (err, isMatch) => {
                     if(isMatch && !err){
                         const token =  jwt.encode(user.loginRepr(), process.env.MY_SECRET);
-                        res.json({sucess:true, token:token})
+                        res.json({success:true, token:token})
                     }else{
                         return res.status(403).json({success:false, msg: 'Authentication failed, wrong pwd'});
                     }

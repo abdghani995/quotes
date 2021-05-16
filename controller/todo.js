@@ -4,7 +4,7 @@ const { NotExtended } = require("http-errors");
 
 module.exports = {
     addTodo: (req, res, next) => {
-        if(!req.body.title || !req.body.content) {
+        if(!req.body.title) {
             res.json({"success": false, "message": "Enter all fields"});
         }else{
             var todo = Todo({
