@@ -2,51 +2,43 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const uid = require("uuid");
 
-var todoSchema = new mongoose.Schema({
+var projectSchema = new mongoose.Schema({
+    projectid: {
+        type: String,
+        default: () => uid.v4()
+    },
     userid: {
         type: String,
         default: ""
-    },
-    projectid: {
-        type: String,
-        default: ""
-    },
-    todoid: {
-        type: String,
-        default: () => uid.v4()
     },
     title: {
         type: String,
         require: true,
     },
-    content: {
+    description: {
         type: String,
         require: false
     },
-    status: {
+    favourite: {
         type: Boolean,
         default: false
     },
     created: {
         type: Date,
         default: Date.now
-    },
-    updated: {
-        type: Date,
-        require: false
     }
 });
 
-todoSchema.methods.repr = function(){
+projectSchema.methods.repr = function(){
     return {
         "projectid": this.projectid,
         "userid": this.userid,
         "title": this.title,
         "content": this.content,
-        "status": this.status,
+        "favourite": this.favourite,
         "created": this.created,
         "updated": this.updated
     }
 }
 
-module.exports = mongoose.model('Todo', todoSchema);
+module.exports = mongoose.model('Project', projectSchema);

@@ -2,16 +2,12 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const uid = require("uuid");
 
-var todoSchema = new mongoose.Schema({
-    userid: {
-        type: String,
-        default: ""
-    },
+var notesSchema = new mongoose.Schema({
     projectid: {
         type: String,
-        default: ""
+        require: true
     },
-    todoid: {
+    noteid: {
         type: String,
         default: () => uid.v4()
     },
@@ -23,7 +19,7 @@ var todoSchema = new mongoose.Schema({
         type: String,
         require: false
     },
-    status: {
+    favourite: {
         type: Boolean,
         default: false
     },
@@ -33,20 +29,20 @@ var todoSchema = new mongoose.Schema({
     },
     updated: {
         type: Date,
-        require: false
+        default: Date.now
     }
 });
 
-todoSchema.methods.repr = function(){
+notesSchema.methods.repr = function(){
     return {
         "projectid": this.projectid,
-        "userid": this.userid,
+        "noteid": this.noteid,
         "title": this.title,
         "content": this.content,
-        "status": this.status,
+        "favourite": this.favourite,
         "created": this.created,
         "updated": this.updated
     }
 }
 
-module.exports = mongoose.model('Todo', todoSchema);
+module.exports = mongoose.model('Notes', notesSchema);

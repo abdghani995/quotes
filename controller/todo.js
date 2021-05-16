@@ -3,6 +3,7 @@ const jwt = require("jwt-simple");
 const { NotExtended } = require("http-errors");
 
 module.exports = {
+    // add a todo for a user
     addTodo: (req, res, next) => {
         if(!req.body.title) {
             res.json({"success": false, "message": "Enter all fields"});
@@ -24,6 +25,7 @@ module.exports = {
         }
     },
 
+    // fetch todo of a user
     fetchTodo: (req, res, next) => {
         Todo.find({userid: req.user.uid}, {_id:0, userid:0,__v:0}, (err, todoData) =>{
             if(err){
@@ -36,6 +38,7 @@ module.exports = {
         })
     },
 
+    // update a todo status by id
     updateTodo: function (req, res, next) {
         if(!req.body.todoid || !req.body.status) {
             res.status(400).json({status:false, message:"Invalid Data"});
@@ -50,6 +53,7 @@ module.exports = {
                     return next();
                 }else{
                     todoData.status = req.body.status;
+                    todoData.updated = new Date();
                     todoData.save((err, data) => {
                         if(err) { res.status(400).json({"success":false, "message":"Error saving data"})}
                         else{

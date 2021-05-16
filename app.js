@@ -18,6 +18,8 @@ app.use(morgan('dev'));
 app.get("/", (req, res) => res.send({"hello": "world"}));
 app.use('/api/quote', require("./routes/quotes"));
 app.use('/api/user', require("./routes/users"));
+app.use('/api/projects', require("./routes/projects"));
+app.use('/api/notes', require("./routes/notes"));
 
 // catch 404 and forward to error handler
 app.get('*', function(req, res){
