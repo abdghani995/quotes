@@ -53,10 +53,9 @@ module.exports = {
     updateFavourite: (req, res, next) => {
         Note.findOne({noteid: req.params.note_id}, { __v:0, }, (err, note) =>{
             if(err || note == null){
-                return res.status(501).send("Some error");
+                return res.status(200).json({"success":false, "message":err});
                 return next();
             }else{
-                console.log(note);
                 note.favourite = req.body.status;
                 note.save((err, data) => {
                     console.log(err, data);
