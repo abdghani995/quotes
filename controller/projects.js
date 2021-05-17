@@ -40,14 +40,14 @@ module.exports = {
         if(!req.body.status) {
             res.json({"success": false, "message": "Status missing"});
         }else{
-            Projects.find({projectid: req.params.projectid}, {_id:0}, (err, projectData) =>{
-                if(err){
+            Projects.findOne({projectid: req.params.project_id}, {}, (err, projectData) =>{
+                // console.log(projectData);
+                if(err || projectData==null){
                     return res.status(200).json({"success":false, "message":err});
                     return next();
                 }else{
                     projectData.favourite = req.body.status;
                     projectData.save((err, data) => {
-                        console.log(err, data);
                         if(err) { res.status(400).json({"success":false, "message":"Error saving Project" ,"err": err})}
                         else{
                             return res.json({"success": true, "message": "Project updated successfully"})
