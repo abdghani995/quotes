@@ -1,6 +1,40 @@
 const Todo = require("../models/todo");
 const jwt = require("jwt-simple");
 const { NotExtended } = require("http-errors");
+const todo = require("../models/todo");
+
+let addProjectTodo = async (req, res, next) => {
+    if(!req.body.title) {
+        res.json({"success": false, "message": "Enter all fields"});
+    }else{
+        try{
+            _todo = Todo({
+                "userid": req.user.uid,
+                "projectid": req.params.project_id,
+                "title": req.body.title,
+                "content": req.body.content,
+            });
+            await _todo.save();
+            return res.json({"success": true, "message": "Todo saved successfully"});
+            return next();
+
+        }catch(err){
+            return res.json({"success": false,"message":"Failed saving todo", "description": err});
+            return next();
+        }
+    }
+}
+
+let getProjectTodo = async (req, res, next) => {
+    try{
+        todos = await Todo.find({projectid:req.params.project_id},{_id:0,__v:0, content:0}).exec();
+        return res.json( todos);
+        return next();
+    }catch(err){
+        return res.json({"success": false,"message":"error fetching todo", "description": err});
+        return next();
+    }
+}
 
 module.exports = {
     // add a todo for a user
@@ -64,5 +98,8 @@ module.exports = {
                 }
             })
         }
-    }
+    },
+
+    addProjectTodo: addProjectTodo,
+    getProjectTodo: getProjectTodo
 }
