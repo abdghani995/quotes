@@ -27,7 +27,7 @@ let addProjectTodo = async (req, res, next) => {
 
 let getProjectTodo = async (req, res, next) => {
     try{
-        todos = await Todo.find({projectid:req.params.project_id},{_id:0,__v:0, content:0}).exec();
+        todos = await Todo.find({projectid:req.params.project_id},{_id:0,__v:0}).exec();
         return res.json( todos);
         return next();
     }catch(err){
