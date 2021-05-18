@@ -43,11 +43,15 @@ module.exports = {
                 req.user = decodeToken;
                 next();
             }else{
+                console.log("--1");
                 return res.status(401).json({"error":"Unauthorized user"});
                 next("Unauthorixed");
             }
         }catch(err){
-            return res.status(401).json({"error":"Unauthorized user"});
+            console.log("-----------1");
+            console.log(err);
+            console.log("-----------1");
+            return res.status(200).json({"error":err});
             next("Unauthorixed");
         }
     },

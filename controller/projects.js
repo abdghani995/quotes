@@ -1,4 +1,24 @@
 const Projects = require("../models/projects");
+const Notes = require("../models/notes");
+const Todo = require("../models/todo");
+
+
+const fetchProjectData = async function(req, res, next) {
+    let project = {}
+    projectData = await Projects.findOne({projectid: req.params.project_id}, {_id:0,__v:0}).exec();
+    if (projectData != null){
+        let noteCount = await Notes.count({projectid:projectData.projectid}).exec();
+        let todoCount = await Todo.count({projectid:projectData.projectid}).exec();
+        project['info'] = projectData
+        project['notes'] = noteCount;
+        project['todo'] = todoCount;
+        return res.status(200).json(project);
+        return next();
+    }else{
+        res.status(200).json({"success":false, "message":"Project not found "});
+        return next()
+    }
+}
 
 module.exports = {
     // add a new project for a user
@@ -27,6 +47,7 @@ module.exports = {
     fetchProjects: (req, res, next) => {
         Projects.find({userid: req.user.uid}) 
             // {_id:0, userid:0,__v:0},
+            .select()
             .sort({ created : -1})
              .exec((err, projectData) =>{
             if(err){
@@ -44,7 +65,6 @@ module.exports = {
             res.json({"success": false, "message": "Status missing"});
         }else{
             Projects.findOne({projectid: req.params.project_id}, {}, (err, projectData) =>{
-                // console.log(projectData);
                 if(err || projectData==null){
                     return res.status(200).json({"success":false, "message":err});
                     return next();
@@ -61,4 +81,5 @@ module.exports = {
             })
         }
     },
+    fetchProjectData: fetchProjectData
 };
