@@ -1,5 +1,6 @@
 const Note = require("../models/notes");
 
+
 module.exports = {
     // add a new note to a project
     addNotes: (req, res, next) => {
@@ -26,7 +27,10 @@ module.exports = {
 
     // fetch prjects
     fetchNotes: (req, res, next) => {
-        Note.find({projectid: req.params.project_id}, {_id:0, projectid:0,__v:0, content:0}, (err, notes) =>{
+
+        Note.find({projectid: req.params.project_id})
+            .sort({ created : -1})
+            .exec((err, notes) =>{
             if(err){
                 return res.status(501).send("Some error");
                 return next();

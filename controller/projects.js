@@ -46,10 +46,8 @@ module.exports = {
     // fetch prjects
     fetchProjects: (req, res, next) => {
         Projects.find({userid: req.user.uid}) 
-            // {_id:0, userid:0,__v:0},
-            .select()
             .sort({ created : -1})
-             .exec((err, projectData) =>{
+            .exec((err, projectData) =>{
             if(err){
                 return res.status(501).send("Some error");
                 return next();
