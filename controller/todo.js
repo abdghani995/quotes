@@ -3,6 +3,7 @@ const jwt = require("jwt-simple");
 const { NotExtended } = require("http-errors");
 const todo = require("../models/todo");
 
+// add a new todo to a project
 let addProjectTodo = async (req, res, next) => {
     if(!req.body.title) {
         res.json({"success": false, "message": "Enter all fields"});
@@ -15,7 +16,7 @@ let addProjectTodo = async (req, res, next) => {
                 "content": req.body.content,
             });
             await _todo.save();
-            return res.json({"success": true, "message": "Todo saved successfully"});
+            return res.json({"success": true, _todo});
             return next();
 
         }catch(err){

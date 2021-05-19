@@ -12,12 +12,12 @@ module.exports = {
                 "title": req.body.title,
                 "content": req.body.content
             });
-            note.save((err, note) => {
+            note.save((err, _note) => {
                 if(err){
                     return res.json({"success": false,"message":"Failed saving note", "description": err});
                     return next();
                 }else{
-                    return res.json({"success": true, "message": "Note saved successfully"});
+                    return res.json({"success": true, _note});
                     return next();
                 }
             })

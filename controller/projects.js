@@ -31,12 +31,12 @@ module.exports = {
                 "title": req.body.title,
                 "description": req.body.description,
             });
-            project.save((err, newProject) => {
-                if(err){
+            project.save((err, _project) => {
+                if(err || _project == null){
                     return res.json({"success": false,"message":"Failed saving project", "description": err});
                     return next();
                 }else{
-                    return res.json({"success": true, "message": "Project saved successfully"});
+                    return res.json({"success": true, _project});
                     return next();
                 }
             })
@@ -81,6 +81,6 @@ module.exports = {
             })
         }
     },
-    
+
     fetchProjectData: fetchProjectData
 };
