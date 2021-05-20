@@ -30,6 +30,10 @@ var notesSchema = new mongoose.Schema({
     updated: {
         type: Date,
         default: Date.now
+    },
+    isArcheived: {
+        type: Boolean,
+        default: false
     }
 });
 

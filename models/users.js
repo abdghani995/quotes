@@ -26,6 +26,7 @@ var userSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+
 // prehook to create hash of a password
 userSchema.pre("save",async function(next) {
     var user = this;

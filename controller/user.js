@@ -17,6 +17,7 @@ module.exports = {
             })
         }
     },
+
     loginUser : async(req, res) => {
         User.findOne({username: req.body.username},{_id:0}, (err, user) => {
             if(err) throw err;
@@ -48,9 +49,6 @@ module.exports = {
                 next("Unauthorixed");
             }
         }catch(err){
-            console.log("-----------1");
-            console.log(err);
-            console.log("-----------1");
             return res.status(200).json({"error":err});
             next("Unauthorixed");
         }
@@ -60,4 +58,5 @@ module.exports = {
         res.json(req.user);
         return next();
     }
+    
 }
