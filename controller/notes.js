@@ -7,8 +7,8 @@ const updateANote = async (req, res, next) => {
             return res.json({"success": false, "error": "Error fetching notes"});
             return next();
         }else{
-            _note.title = req.body.title;
-            _note.content = req.body.content;
+            _note.title = req.body.title || '';
+            _note.content = req.body.content || '';
             _note.updated = Date();
             await _note.save();
             return res.json({"success": true, "message": "Note Updated successfully"});
@@ -41,24 +41,25 @@ const archieveANote = async (req, res, next) => {
 module.exports = {
     // add a new note to a project
     addNotes: (req, res, next) => {
-        if(!req.body.content || !req.body.title) {
-            res.json({"success": false, "message": "Enter all required fields(title, content)"});
-        }else{
-            var note = Note({
-                "projectid": req.params.project_id,
-                "title": req.body.title,
-                "content": req.body.content
-            });
-            note.save((err, _note) => {
-                if(err){
-                    return res.json({"success": false,"message":"Failed saving note", "description": err});
-                    return next();
-                }else{
-                    return res.json({"success": true, _note});
-                    return next();
-                }
-            })
-        }
+        // if(!req.body.content || !req.body.title) {
+        //     res.json({"success": false, "message": "Enter all required fields(title, content)"});
+        // }else{
+            
+        // }
+        var note = Note({
+            "projectid": req.params.project_id,
+            "title": req.body.title || '',
+            "content": req.body.content || ''
+        });
+        note.save((err, _note) => {
+            if(err){
+                return res.json({"success": false,"message":"Failed saving note", "description": err});
+                return next();
+            }else{
+                return res.json({"success": true, _note});
+                return next();
+            }
+        })
     },
 
     // fetch prjects

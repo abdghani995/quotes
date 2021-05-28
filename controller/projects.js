@@ -23,13 +23,13 @@ const fetchProjectData = async function(req, res, next) {
 module.exports = {
     // add a new project for a user
     addProject: (req, res, next) => {
-        if(!req.body.title || !req.body.description) {
-            res.json({"success": false, "message": "Enter all required fields(title, description)"});
+        if(!req.body.title) {
+            res.json({"success": false, "message": "Enter all required fields(title)"});
         }else{
             var project = Projects({
                 "userid": req.user.uid,
                 "title": req.body.title,
-                "description": req.body.description,
+                "description": req.body.description || '',
             });
             project.save((err, _project) => {
                 if(err || _project == null){
