@@ -26,6 +26,12 @@ let addProjectTodo = async (req, res, next) => {
     }
 }
 
+let deleteTodo = async (req, res, next) => {
+    await Todo.remove({todoid: req.params.todoid}).exec();
+    return res.json({"success": true,});
+    return next();
+}
+
 let getProjectTodo = async (req, res, next) => {
     try{
         todos = await Todo.find({projectid:req.params.project_id},{_id:0,__v:0}).sort({ created : -1}).exec();
@@ -102,5 +108,7 @@ module.exports = {
     },
 
     addProjectTodo: addProjectTodo,
-    getProjectTodo: getProjectTodo
+    getProjectTodo: getProjectTodo,
+
+    deleteTodo: deleteTodo
 }

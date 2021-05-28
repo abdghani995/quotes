@@ -20,6 +20,7 @@ app.use('/api/quote', require("./routes/quotes"));
 app.use('/api/user', require("./routes/users"));
 app.use('/api/projects', require("./routes/projects"));
 app.use('/api/notes', require("./routes/notes"));
+app.use('/api/todo', require("./routes/todo"));
 
 // catch 404 and forward to error handler
 app.get('*', function(req, res){
