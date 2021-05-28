@@ -92,7 +92,7 @@ module.exports = {
                     todoData.save((err, data) => {
                         if(err) { res.status(400).json({"success":false, "message":"Error saving data"})}
                         else{
-                            return res.json({"success": true, "message": "Todo updated successfully"})
+                            return res.json({"success": true, "todo": todoData.repr()})
                             return next();
                         }
                     });
