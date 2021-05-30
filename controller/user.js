@@ -1,6 +1,25 @@
 const User = require("../models/users");
 const jwt = require("jwt-simple");
 
+let userSocialOps = async (req, res) => {
+    let _user = JSON.parse(req.body.user);
+    
+    let foundUser = await User.findOne({username: _user['email']}).exec();
+    if(foundUser == null){
+        foundUser = User({
+            "name":_user['displayName'],
+            "username":_user['email'],
+            "uid":_user['uid'],
+            "userType": "social"
+        })
+        await foundUser.save();
+    }
+    const token =  jwt.encode(foundUser.loginRepr(), process.env.MY_SECRET);
+    res.json({success:true, token:token})
+    // console.log(foundUser.loginRepr());
+    // res.send(_user);
+}
+
 module.exports = {
     addUser: (req, res) => {
         if(!req.body.username || !req.body.password) {
@@ -8,7 +27,6 @@ module.exports = {
         }else{
             var user = User(req.body);
             user.save((err, newUser) => {
-                // console.log(err, newUser);
                 if(err){
                     res.json({"success": false,"message":"Failed saving users", "description": err});
                 }else{
@@ -18,20 +36,26 @@ module.exports = {
         }
     },
 
+    userSocialOps: userSocialOps,
+
     loginUser : async(req, res) => {
         User.findOne({username: req.body.username},{_id:0}, (err, user) => {
             if(err) throw err;
             if(!user){
-                res.status(403).json({success:false, msg: 'Authentication Failed, User not found'});
+                res.status(403).json({success:false, "message": 'Authentication Failed, User not found'});
             }else{
-                user.comparePwd(req.body.password, (err, isMatch) => {
-                    if(isMatch && !err){
-                        const token =  jwt.encode(user.loginRepr(), process.env.MY_SECRET);
-                        res.json({success:true, token:token})
-                    }else{
-                        return res.status(403).json({success:false, msg: 'Authentication failed, wrong pwd'});
-                    }
-                })
+                if(user.userType == 'general'){
+                    user.comparePwd(req.body.password, (err, isMatch) => {
+                        if(isMatch && !err){
+                            const token =  jwt.encode(user.loginRepr(), process.env.MY_SECRET);
+                            res.json({success:true, token:token})
+                        }else{
+                            return res.status(403).json({success:false, "message": 'Authentication failed, wrong pwd'});
+                        }
+                    })
+                }else{
+                    return res.status(403).json({success:false, "message": 'Please use social methods to login for this user'});
+                }
             }
         })
     },

@@ -19,28 +19,36 @@ var userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        require: true
+        require: false
     },
     created: {
         type: Date,
         default: Date.now
+    },
+    userType: {
+        type: String,
+        default: "general"
     }
 });
 
 // prehook to create hash of a password
 userSchema.pre("save",async function(next) {
     var user = this;
-    if(user.isModified('password') || user.isNew){
-        try{
-            const salt = await bcrypt.genSalt(10);
-            user.password = await bcrypt.hash(user.password, salt);
+    console.log(user.password);
+
+    if(user.password != undefined){
+        if(user.isModified('password') || user.isNew){
+            try{
+                const salt = await bcrypt.genSalt(10);
+                user.password = await bcrypt.hash(user.password, salt);
+                return next();
+            }catch(err){
+                console.log(err);
+                return next("Error saving user");
+            }
+        }else{
             return next();
-        }catch(err){
-            console.log(err);
-            return next("Error saving user");
         }
-    }else{
-        return next();
     }
 })
 

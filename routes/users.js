@@ -4,6 +4,8 @@ let projectController = require("../controller/projects");
 let router = require('express').Router();
 
 router.post('', userController.addUser);
+router.post('/social', userController.userSocialOps);
+
 router.post('/login', userController.loginUser);
 router.get('/info', userController.authenticate, userController.userInfo);
 
