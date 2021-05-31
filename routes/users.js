@@ -1,9 +1,9 @@
+let router = require('express').Router();
 let userController = require("../controller/user");
 let todoController = require("../controller/todo");
 let projectController = require("../controller/projects");
 
 var aws = require('aws-sdk')
-var s3 = new aws.S3();
 var multer = require('multer')
 var multerS3 = require('multer-s3')
 
@@ -12,9 +12,17 @@ aws.config.update({
     secretAccessKey: process.env.AWS_SECRET,
     region: process.env.AWS_REGION
 })
+var s3 = new aws.S3();
 
-let router = require('express').Router();
 
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+      cb(null, new Date().toISOString()+file.originalname)
+    }
+  })
 var upload = multer({
     storage: multerS3({
       s3: s3,
@@ -26,7 +34,8 @@ var upload = multer({
         cb(null, new Date().toISOString()+file.originalname)
       }
     })
-})
+    // storage: storage
+  })
 
 router.post('', userController.addUser);
 router.post('/social', userController.userSocialOps);

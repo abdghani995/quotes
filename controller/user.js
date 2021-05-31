@@ -81,6 +81,7 @@ let profileImage = async(req, res) => {
     let foundUser = await User.findOne({username: req.user['username']}).exec();
     foundUser.displayImage =req.file.location;
     await foundUser.save(); 
+    console.log(process.env.AWS_ID);
     return res.json({"url": req.file.location});
 }
 
