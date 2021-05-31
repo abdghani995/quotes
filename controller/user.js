@@ -1,5 +1,9 @@
 const User = require("../models/users");
+const Projects = require("../models/projects");
+const Notes = require("../models/notes");
+const Todo = require("../models/todo");
 const jwt = require("jwt-simple");
+const async = require("async");
 
 let userSocialOps = async (req, res) => {
     // social login saves users data without password 
@@ -42,7 +46,12 @@ let loginUser = async(req, res) => {
 
 let userInfo = async(req, res) => {
     let foundUser = await User.findOne({username: req.user['username']}).exec();
-    return res.json(foundUser.infoRepr());
+    foundUser = foundUser.infoRepr();
+    foundUser['projectsCnt'] = await Projects.count({userid:req.user.uid}).exec();
+    foundUser['notesCnt'] = await Notes.count({userid:req.user.uid}).exec();
+    foundUser['todosCnt'] = await Todo.count({userid:req.user.uid}).exec();
+
+    return res.json(foundUser);
 }
 
 let authenticateUser = (req, res, next) => {

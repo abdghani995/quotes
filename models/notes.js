@@ -7,6 +7,10 @@ var notesSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    userid: {
+        type: String,
+        require: true
+    },
     noteid: {
         type: String,
         default: () => uid.v4()

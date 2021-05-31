@@ -41,12 +41,8 @@ const archieveANote = async (req, res, next) => {
 module.exports = {
     // add a new note to a project
     addNotes: (req, res, next) => {
-        // if(!req.body.content || !req.body.title) {
-        //     res.json({"success": false, "message": "Enter all required fields(title, content)"});
-        // }else{
-            
-        // }
         var note = Note({
+            "userid": req.user.uid,
             "projectid": req.params.project_id,
             "title": req.body.title || '',
             "content": req.body.content || ''
