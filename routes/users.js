@@ -1,13 +1,48 @@
 let userController = require("../controller/user");
 let todoController = require("../controller/todo");
 let projectController = require("../controller/projects");
+
+var aws = require('aws-sdk')
+var multer = require('multer')
+var multerS3 = require('multer-s3')
+aws.config.update({
+    accessKeyId: 'AKIAVBMZI5S75OWSVQQE',
+    secretAccessKey: '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',
+    region: 'ap-south-1'
+})
+;
+var s3 = new aws.S3();
+
 let router = require('express').Router();
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+      cb(null, new Date().toISOString()+file.originalname)
+    }
+  })
+var upload = multer({
+    storage: multerS3({
+      s3: s3,
+      bucket: 'upz-local',
+      metadata: function (req, file, cb) {
+        cb(null, {fieldName: file.fieldname});
+      },
+      key: function (req, file, cb) {
+        cb(null, new Date().toISOString()+file.originalname)
+      }
+    })
+    // storage: storage
+  })
 
 router.post('', userController.addUser);
 router.post('/social', userController.userSocialOps);
 
 router.post('/login', userController.loginUser);
 router.get('/info', userController.authenticate, userController.userInfo);
+router.post('/profileImage', userController.authenticate, upload.single('myFile'), userController.profileImage);
 
 router.get('/todo', userController.authenticate, todoController.fetchTodo);
 router.post('/todo', userController.authenticate, todoController.addTodo);

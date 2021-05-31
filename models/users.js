@@ -28,13 +28,17 @@ var userSchema = new mongoose.Schema({
     userType: {
         type: String,
         default: "general"
+    },
+    displayImage: {
+        type: String,
+        require: false,
+        default: ""
     }
 });
 
 // prehook to create hash of a password
 userSchema.pre("save",async function(next) {
     var user = this;
-    console.log(user.password);
 
     if(user.password != undefined){
         if(user.isModified('password') || user.isNew){
@@ -67,6 +71,17 @@ userSchema.methods.loginRepr = function(){
         "name": this.name,
         "username": this.username,
         "uid": this.uid
+    }
+}
+
+userSchema.methods.infoRepr = function(){
+    return {
+        "created": this.created,
+        "name": this.name,
+        "username": this.username,
+        "uid": this.uid,
+        "displayImage": this.displayImage,
+        "userType": this.userType
     }
 }
 
