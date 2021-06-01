@@ -117,7 +117,7 @@ let profileImage = async(req, res) => {
         blobWriter.on('error', (err) => {
             console.log(err)
         });
-        blobWriter.on('finish', () => {
+        blobWriter.on('finish', async () => {
             let foundUser = await User.findOne({username: req.user['username']}).exec();
             foundUser.displayImage =url;
             await foundUser.save(); 
