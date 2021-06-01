@@ -1,9 +1,20 @@
-const User = require("../models/users");
+var admin = require('firebase-admin');
+
 const Projects = require("../models/projects");
+const User = require("../models/users");
 const Notes = require("../models/notes");
 const Todo = require("../models/todo");
 const jwt = require("jwt-simple");
 const async = require("async");
+
+
+// Initialize firebase admin SDK
+admin.initializeApp({
+    credential: admin.credential.cert('fbase.json'),
+    storageBucket: 'snaps-a025b.appspot.com'
+})
+// Cloud storage
+const bucket = admin.storage().bucket()
 
 let userSocialOps = async (req, res) => {
     // social login saves users data without password 
@@ -87,11 +98,30 @@ let addUser = async (req, res) => {
 }
 
 let profileImage = async(req, res) => {
-    let foundUser = await User.findOne({username: req.user['username']}).exec();
-    foundUser.displayImage =req.file.location;
-    await foundUser.save(); 
-    console.log(process.env.AWS_ID);
-    return res.json({"url": req.file.location});
+    // let foundUser = await User.findOne({username: req.user['username']}).exec();
+    // foundUser.displayImage =req.file.location;
+    // await foundUser.save(); 
+    // console.log(process.env.AWS_ID);
+    // return res.json({"url": req.file.location});
+    if(!req.file) {
+        res.status(400).send("Error: No files found")
+    } else {
+        let fname = new Date().toISOString()+req.file.originalname;
+        var url = 'https://firebasestorage.googleapis.com/v0/b/snaps-a025b.appspot.com/o/'+fname + '?alt=media'
+        const blob = bucket.file(fname);
+        const blobWriter = blob.createWriteStream({
+            metadata: {
+                contentType: req.file.mimetype
+            }
+        });
+        blobWriter.on('error', (err) => {
+            console.log(err)
+        });
+        blobWriter.on('finish', () => {
+            return res.status(200).json({"url": url})
+        });
+        blobWriter.end(req.file.buffer);
+    }
 }
 
 module.exports = {

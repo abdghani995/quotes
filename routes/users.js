@@ -6,6 +6,7 @@ let projectController = require("../controller/projects");
 var aws = require('aws-sdk')
 var multer = require('multer')
 var multerS3 = require('multer-s3')
+var admin = require('firebase-admin');
 
 aws.config.update({
     accessKeyId: process.env.AWS_ID,
@@ -14,28 +15,25 @@ aws.config.update({
 })
 var s3 = new aws.S3();
 
+// var upload = multer({
+//     storage: multerS3({
+//       s3: s3,
+//       bucket: 'upz-local',
+//       metadata: function (req, file, cb) {
+//         cb(null, {fieldName: file.fieldname});
+//       },
+//       key: function (req, file, cb) {
+//         cb(null, new Date().toISOString()+file.originalname)
+//       }
+//     })
+// })
 
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads')
-    },
-    filename: function (req, file, cb) {
-      cb(null, new Date().toISOString()+file.originalname)
-    }
-  })
-var upload = multer({
-    storage: multerS3({
-      s3: s3,
-      bucket: 'upz-local',
-      metadata: function (req, file, cb) {
-        cb(null, {fieldName: file.fieldname});
-      },
-      key: function (req, file, cb) {
-        cb(null, new Date().toISOString()+file.originalname)
-      }
-    })
-    // storage: storage
-  })
+const upload = multer({
+    storage: multer.memoryStorage()
+})
+
+  
+
 
 router.post('', userController.addUser);
 router.post('/social', userController.userSocialOps);
